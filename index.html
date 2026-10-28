@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moonlit Pumpkin Patch</title>
+
+    <!-- Load the p5.js library -->
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 32px 20px;
+        background: #110f20;
+        color: #f9edda;
+        font-family: Arial, sans-serif;
+        text-align: center;
+      }
+
+      main {
+        max-width: 800px;
+        margin: auto;
+      }
+
+      .eyebrow {
+        color: #e6ac68;
+        font-size: 12px;
+        letter-spacing: 3px;
+      }
+
+      h1 {
+        margin: 12px 0;
+        font: normal 42px Georgia, serif;
+      }
+
+      .intro {
+        margin: 0 0 24px;
+        color: #c2b4d5;
+        line-height: 1.6;
+      }
+
+      canvas {
+        display: block;
+        width: 100% !important;
+        height: auto !important;
+        border: 1px solid #554365;
+        border-radius: 16px;
+      }
+
+      .controls {
+        color: #c2b4d5;
+        font-size: 13px;
+        margin: 18px 0 24px;
+      }
+
+      kbd {
+        color: #f9edda;
+        font: inherit;
+        border: 1px solid #554365;
+        padding: 3px 7px;
+        border-radius: 4px;
+      }
+
+      details {
+        text-align: left;
+        font-size: 13px;
+        color: #c2b4d5;
+        line-height: 1.7;
+      }
+
+      summary {
+        cursor: pointer;
+        color: #e6ac68;
+      }
+
+      a {
+        color: #e6ac68;
+      }
+
+      @media (max-width: 500px) {
+        body {
+          padding: 24px 12px;
+        }
+
+        h1 {
+          font-size: 30px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.3/lib/p5.min.js"></script>
+
+    <main>
+      <div class="eyebrow">A LITTLE HALLOWEEN NIGHT</div>
+
+      <h1>Moonlit Pumpkin Patch</h1>
+
+      <p class="intro">
+        One friendly ghost. One glowing pumpkin.
+        One bat on a midnight flight.
+      </p>
+
+      <div id="sketch" data-aria-label="Animated Halloween scene"></div>
+
+      <p class="controls">
+        <kbd>Space</kbd> pause / play
+        &nbsp;&nbsp;
+        <kbd>S</kbd> save a picture
+      </p>
+
+      <details>
+        <summary>Animation details &amp; outside sources</summary>
+
+        <p>
+          The ghost floats and gently sways.
+          The pumpkin grows and shrinks as its face changes
+          from orange to yellow. The bat follows an elliptical
+          path, tilts, and flaps its wings.
+          A slowly changing purple sky, fading stars, and
+          a glowing moon connect everything to the Halloween theme.
+        </p>
+
+        <p>
+          Bonus features: changing background colors,
+          random star positions and sizes, arrays,
+          synchronized pumpkin effects, and push() / pop()
+          for transformations.
+        </p>
+
+        <p>
+          <strong>AI assistance:</strong>
+          NetNet AI helped with the coding problems that was happening inside the code, while Gemini provided the official p5js sources on how to get the movement of my three shapes to move smoothly.
+        </p>
+
+        <p>
+          <strong>References and how they apply to this sketch:</strong>
+          Class tutorial, <em>Introto_p5js.pdf</em>, for setup(), draw(),
+          shapes, variables, loops, arrays, colors, and media loading.
+          Additional official p5.js references are grouped below.
+          The matching [R1]-[R8] comments explain their use in the code.
+        </p>
+
+        <ul>
+          <li><strong>[R1] Animation timing:</strong>
+            <a href="https://p5js.org/references/p5/frameCount/" target="_blank" rel="noopener">frameCount</a> supplies a changing frame number. Multiplying it by 0.02 controls how quickly the animation phase advances.
+          </li>
+          <li><strong>[R2] Repeating movement:</strong> <a href="https://p5js.org/reference/p5/sin/" target="_blank" rel="noopener">sin()</a> and <a href="https://p5js.org/reference/p5/cos/" target="_blank" rel="noopener">cos()</a> control the ghost's motion, the bat's elliptical path, and wing flapping.
+          </li>
+          <li><strong>[R3] Changing number ranges:</strong> <a href="https://p5js.org/reference/p5/map/" target="_blank" rel="noopener">map()</a> converts the repeating values into useful sizes and opacity values.
+          </li>
+          <li><strong>[R4] Color and transparency:</strong> <a href="https://p5js.org/reference/p5/lerpColor/" target="_blank" rel="noopener">lerpColor()</a> blends the sky and pumpkin-face colors. The forth argument of <a href="https://p5js.org/reference/p5/fill/" target="_blank" rel="noopener">fill()</a> controls opacity, creating the fading stars and translucent glow.
+          </li>
+          <li><strong>[R5] Moving and rotating groups:</strong> <a href="https://p5js.org/reference/p5/translate/" target="_blank" rel="noopener">translate()</a> places each character's drawing origin; <a href="https://p5js.org/reference/p5/rotate/" target="_blank" rel="noopener">rotate()</a> tilts it. <a href="https://p5js.org/reference/p5/push/" target="_blank" rel="noopener">push()</a> and <a href="https://p5js.org/reference/p5/pop/" target="_blank" rel="noopener">pop()</a> keep those changes inside that character's group.
+          </li>
+          <li><strong>[R6] Random stars:</strong> <a href="https://p5js.org/reference/p5/random/" target="_blank" rel="noopener">random()</a> selects star positions and sizes once in setup(); arrays store them.
+          </li>
+          <li><strong>[R7] Image loading:</strong> The <a href="https://archive.p5js.org/reference/#/p5/preload" target="_blank" rel="noopener">p5.js 1.x preload() reference</a> and <a href="https://archive.p5js.org/reference/#/p5/loadImage" target="_blank" rel="noopener">loadImage() reference</a> explain loading the moon before setup(). This sketch uses p5.js 1.11.3.
+          </li>
+          <li><strong>[R8] Keyboard controls:</strong> <a href="https://p5js.org/reference/p5/noLoop/" target="_blank" rel="noopener">noLoop()</a> and <a href="https://p5js.org/reference/p5/loop/" target="_blank" rel="noopener">loop()</a> pauses and resumes drawing; <a href="https://p5js.org/reference/p5/saveCanvas/" target="_blank" rel="noopener">saveCanvas()</a> exports a PNG when S is pressed.
+          </li>
+        </ul>
+
+        <p>
+          <strong>Image credit:</strong>
+          Full moon PNG (1f315.png),
+          <a href="https://github.com/twitter/twemoji/tree/v14.0.2" target="_blank" rel="noopener">
+            Twemoji
+          </a>,
+          Twitter, Inc. and other contributors, licensed under
+          <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">
+            CC BY 4.0
+          </a>.
+          Image pixels are unchanged; the PNG is embedded below
+          and displayed at a larger size.
+        </p>
+      </details>
+    </main>
+
+    <script>
+      // Theme: Halloween, with purple shadows
+      // and warm orange lantern light.
+
+      // sin() and cos() repeat smoothly from -1 to 1.
+      // translate() moves the drawing origin.
+      // rotate() turns the drawing in radians.
+
+      let moon;
+      let paused = false;
+
+      // [R6] Arrays keep matching values together using the same index i.
+      // For example, starX[0], starY[0], and starSize[0] describe one star.
+      // Class slides: arrays and for loops.
+      let starX = [];
+      let starY = [];
+      let starSize = [];
+
+      // The moon PNG is embedded to keep everything in one file.
+      const moonFile = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAMAAABiM0N1AAAATlBMVEVHcEz/2YP/2YP/2YP/2YP/2YP/2YP/2YP/2YP/2YP/2YP/2YP/2YP/2YP/zE3/zVD/0WH/0F7/zlT/1nb/0mX/02j/13z/13n/1XL/2IA8Lxl1AAAADXRSTlMAj6/PgFDfIJ/vQL9g/kGpKAAAAgJJREFUeF69mOmunDAMhRMgG2DDLHfp+79opWlUR7ViB99qvr9IR14ScmwnkHa/RajEze/JGQg5AiPm4C6RfIEOxY/HtU4gMq1j0WRQyQNRLQUGKIsWzgw9vu+I92+owCwGFUpfB1+QUglCWtDnji/uQHTTE6uMFWjIos7jhoh4ewwIQRZ0nlg5hdSYEq/PiX95dost1SnUvLDh0W8/8U/vUu37DRtuMEBJrmWmkjbACDMrEBf6BIkPxA8qEyV2NaJfNeY2uQx2ofYMrFARii2kBrBWoQkqQvtFplohaHiSzgnD/KmSh5aTH2wd/xIqQLBLO0ahy/FDAvXeCv0FIvwHIvXshyS3g87neSAep3T1dudB5evAF8eXdAA2PZ4DK0c/pm2g1ufIYY8OVA4SOqDLgBA2iEL0Q9CF+n7A0S9qNDXuBzQhKrb+aFJqlvZjpQrZDiQXsl0RnloEA7zY0W1ggLd/c77z8SLe7b1wr7G7pHjF8Qcp6hZPJ5LlswqRBQzG1LhvKz8vdmFPtrH9nkyEhP6cJ7I1CrIHn8hoKSgefB0aQnQTlpkZFRBsYUlj85VqVBdm2AUEDz6zEcIUUU2MCFahwMYsW7EXx8iSJeftV0ZIPiQIHlwaarmQ5MGzPq5TasKlXSwLBE4JlpUGZ05vWLIY1j5vWUTpq7G3Luvs68PfpA7WHx15BFgAAAAASUVORK5CYII=";
+
+      // [R7] In p5.js 1.x, preload() finishes loading before setup() runs.
+      // loadImage() turns the embedded PNG data into an image object.
+      // Source: https://archive.p5js.org/reference/#/p5/loadImage
+      function preload () {
+        moon = loadImage(moonFile);
+      }
+
+      function setup () {
+        let canvas = createCanvas(800, 500);
+        canvas.parent("sketch");
+
+        frameRate(60);
+        noStroke();
+
+        // BONUS: random() and arrays.
+        // [R6] Choose positions once in setup(), not repeatedly in draw().
+        // Otherwise the stars would jump to new random places each frame.
+        // random(2, 4) gives a size from 2 up to, but not including, 4.
+        // Source: https://p5js.org/reference/p5/random/
+        for (let i = 0; i < 40; i++) {
+          starX[i] = random(25, width - 25);
+          starY[i] = random(25, 280);
+          starSize[i] = random(2, 4);
+        }
+      }
+
+      function draw () {
+        // [R1] frameCount increases as frames finish drawing.
+        // Multiplying by 0.02 advances t by 0.02 per frame.
+        // A larger multiplier speeds up all animations that use t.
+        // This is based on frame count, so speed depends on actual FPS.
+        // Source: https://p5js.org/reference/p5/frameCount/
+        let t = frameCount * 0.02;
+
+        // BONUS: smoothly changing background colors.
+        // [R3/R4] map() changes the sine range -1..1 into 0..1.
+        // lerpColor() uses 0 for the first color and 1 for the second.
+        // Source: https://p5js.org/reference/p5/lerpColor/
+        let skyMix = map(sin(t * 0.25), -1, 1, 0, 1);
+
+        background(
+          lerpColor(
+            color(20, 23, 48),
+            color(58, 30, 72),
+            skyMix
+          )
+        );
+
+        // Stars fade in and out at different times.
+        // [R3/R4] The fourth fill() value is opacity: 0 is transparent
+        // and 255 is opaque. Here it varies only from 55 to 230.
+        // Adding i shifts each star to a different point in the fade cycle.
+        // Source: https://p5js.org/reference/p5/fill/
+        for (let i = 0; i < starX.length; i++) {
+          let starAlpha = map(sin(t + i), -1, 1, 55, 230);
+
+          fill(255, 235, 198, starAlpha);
+
+          ellipse(
+            starX[i],
+            starY[i],
+            starSize[i],
+            starSize[i]
+          );
+        }
+
+        // Moon glow.
+        fill(255, 216, 151, 10);
+        ellipse(680, 100, 180, 180);
+
+        fill(255, 216, 151, 15);
+        ellipse(680, 100, 140, 140);
+
+        // REQUIRED IMAGE FILE: draw the loaded moon PNG.
+        image(moon, 630, 50, 100, 100);
+
+        // Background hills.
+        fill(27, 30, 44);
+        ellipse(160, 470, 760, 280);
+
+        fill(21, 25, 36);
+        ellipse(640, 475, 920, 240);
+
+        fill(17, 21, 30);
+        rect(0, 410, width, 90);
+
+        // Fence behind the characters.
+        fill(44, 39, 52);
+        rect(30, 355, 730, 9);
+        rect(30, 386, 730, 9);
+
+        for (let x = 50; x < width; x += 65) {
+          rect(x, 340, 12, 72);
+          triangle(x, 340, x + 6, 328, x + 12, 340);
+        }
+
+        // ANIMATED SHAPE 1: FLOATING GHOST
+        // [R2] sin() repeats between -1 and 1. In ghostX, 230 is the
+        // center, 65 is the travel distance on either side, and 0.65
+        // controls the cycle speed. So ghostX ranges from 165 to 295.
+        // ghostY ranges from 291 to 339 and repeats twice as fast.
+        // Source: https://p5js.org/reference/p5/sin/
+        let ghostX = 230 + 65 * sin(t * 0.65);
+        let ghostY = 315 + 24 * sin(t * 1.3);
+
+        // Ghost shadow.
+        fill(7, 12, 19, 80);
+        ellipse(ghostX, 431, 82, 15);
+
+        // [R5] Save the drawing state, move the origin to the ghost,
+        // then rotate around that origin. All face parts move together.
+        // The angle varies from -0.08 to +0.08 radians. pop() below
+        // restores the state so the pumpkin is not moved or tilted too.
+        // Sources: https://p5js.org/reference/p5/translate/
+        //          https://p5js.org/reference/p5/push/
+        push();
+        translate(ghostX, ghostY);
+        rotate(0.08 * sin(t * 0.65));
+
+        // Ghost body.
+        fill(229, 251, 242);
+        ellipse(0, -8, 94, 108);
+        rect(-47, -6, 94, 48);
+
+        // Rounded bottom.
+        ellipse(-31, 40, 32, 32);
+        ellipse(0, 40, 32, 32);
+        ellipse(31, 40, 32, 32);
+
+        // Eyes and mouth.
+        fill(24, 29, 46);
+        ellipse(-17, -15, 12, 17);
+        ellipse(17, -15, 12, 17);
+        ellipse(0, 10, 13, 17);
+
+        // Cheeks.
+        fill(249, 171, 151, 155);
+        ellipse(-30, 4, 13, 7);
+        ellipse(30, 4, 13, 7);
+
+        pop();
+
+        // ANIMATED SHAPE 2: GLOWING PUMPKIN
+        // [R3] map(value, oldMin, oldMax, newMin, newMax) changes ranges.
+        // pulse ranges from 0 to 1; width becomes 122..156 pixels
+        // and height becomes 98..126 pixels. Using the same pulse for
+        // size, face color, and glow keeps the effects synchronized.
+        // Source: https://p5js.org/reference/p5/map/
+        let pulse = map(sin(t), -1, 1, 0, 1);
+
+        let pumpkinWidth = map(pulse, 0, 1, 122, 156);
+        let pumpkinHeight = map(pulse, 0, 1, 98, 126);
+
+        // Ellipses are positioned by their centers. Subtracting half
+        // the height keeps the main pumpkin sections' bottom at y = 425.
+        let pumpkinY = 425 - pumpkinHeight / 2;
+
+        let lanternColor = lerpColor(
+          color(255, 160, 45),
+          color(255, 239, 145),
+          pulse
+        );
+
+        // Animated glow and shadow.
+        fill(255, 155, 49, 12 + pulse * 16);
+        ellipse(553, 382, 225, 165);
+
+        fill(7, 12, 19, 95);
+        ellipse(550, 430, pumpkinWidth + 15, 18);
+
+        push();
+        translate(550, pumpkinY);
+
+        // Stem.
+        fill(90, 113, 65);
+        rect(-7, -pumpkinHeight / 2 - 18, 14, 27, 4);
+
+        // Outer pumpkin sections.
+        fill(195, 80, 31);
+
+        ellipse(
+          -pumpkinWidth * 0.25,
+          0,
+          pumpkinWidth * 0.58,
+          pumpkinHeight * 0.9
+        );
+
+        ellipse(
+          pumpkinWidth * 0.25,
+          0,
+          pumpkinWidth * 0.58,
+          pumpkinHeight * 0.9
+        );
+
+        // Middle sections.
+        fill(232, 107, 40);
+
+        ellipse(
+          -pumpkinWidth * 0.12,
+          0,
+          pumpkinWidth * 0.48,
+          pumpkinHeight
+        );
+
+        ellipse(
+          pumpkinWidth * 0.12,
+          0,
+          pumpkinWidth * 0.48,
+          pumpkinHeight
+        );
+
+        // Center section.
+        fill(249, 139, 57);
+        ellipse(0, 0, pumpkinWidth * 0.34, pumpkinHeight);
+
+        // Glowing eyes, nose, and mouth.
+        fill(lanternColor);
+        triangle(-35, -5, -21, -28, -7, -5);
+        triangle(7, -5, 21, -28, 35, -5);
+        triangle(-7, 10, 0, -2, 7, 10);
+        arc(0, 16, 58, 40, 0, PI);
+
+        // Teeth.
+        fill(230, 108, 40);
+        rect(-17, 15, 9, 10);
+        rect(8, 15, 9, 10);
+
+        pop();
+
+        // ANIMATED SHAPE 3: FLYING BAT
+        // [R2] cos() controls x and sin() controls y at the same phase.
+        // The center is (395, 175), the horizontal radius is 210,
+        // and the vertical radius is 48, creating an elliptical path.
+        // Sources: https://p5js.org/reference/p5/sin/
+        //          https://p5js.org/reference/p5/cos/
+        let batX = 395 + 210 * cos(t * 0.5);
+        let batY = 175 + 48 * sin(t * 0.5);
+
+        // [R2] Changing a triangle's outer point flaps the wing.
+        // wingY ranges from -32 to -4. The multiplier 4 makes
+        // wing flapping cycle eight times per flight-path cycle (0.5).
+        let wingY = -18 + 14 * sin(t * 4);
+
+        push();
+        translate(batX, batY);
+        rotate(0.25 * sin(t * 0.5));
+
+        fill(12, 14, 28);
+
+        // Wings.
+        triangle(-7, 2, -56, wingY, -33, 20);
+        triangle(7, 2, 56, wingY, 33, 20);
+        triangle(-7, 3, -33, 20, -16, 19);
+        triangle(7, 3, 33, 20, 16, 19);
+
+        // Body and head.
+        ellipse(0, 4, 25, 33);
+        ellipse(0, -12, 25, 22);
+
+        // Ears.
+        triangle(-12, -16, -11, -33, -2, -19);
+        triangle(2, -19, 11, -33, 12, -16);
+
+        // Eyes.
+        fill(255, 199, 117);
+        ellipse(-5, -13, 3, 3);
+        ellipse(5, -13, 3, 3);
+
+        pop();
+
+        // Foreground grass.
+        fill(43, 53, 49);
+
+        for (let x = 18; x < width; x += 31) {
+          triangle(x, 475, x + 5, 456, x + 10, 475);
+          triangle(x + 8, 475, x + 14, 461, x + 18, 475);
+        }
+      }
+
+      function keyPressed () {
+        // [R8] ! changes paused from false to true, or true to false.
+        // noLoop() stops repeated drawing; loop() starts it again.
+        // Source: https://p5js.org/reference/p5/noLoop/
+        if (key === " ") {
+          paused = !paused;
+
+          if (paused) {
+            noLoop();
+          } else {
+            loop();
+          }
+
+          // Prevent Space from scrolling the page.
+          return false;
+        }
+
+        // [R8] saveCanvas(filename, extension) exports the current frame.
+        // Checking both s and S accepts either letter case.
+        // Source: https://p5js.org/reference/p5/saveCanvas/
+        if (key === "s" || key === "S") {
+          saveCanvas("moonlit-pumpkin-patch", "png");
+        }
+      }
+    </script>
+  </body>
+</html>
